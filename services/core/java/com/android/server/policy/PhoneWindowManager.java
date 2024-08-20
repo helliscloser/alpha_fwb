@@ -682,7 +682,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     ANBIHandler mANBIHandler;
     private boolean mANBIEnabled;
 
-    private SwipeToScreenshotListener mSwipeToScreenshot;
+    private OPGesturesListener mOPGestures;
     private boolean haveEnableGesture = false;
     private ShakeGestureService mShakeGestures;
 
@@ -3482,13 +3482,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
             boolean threeFingerGesture = Settings.System.getIntForUser(resolver,
                     Settings.System.THREE_FINGER_GESTURE, 0, UserHandle.USER_CURRENT) == 1;
-            if (mSwipeToScreenshot != null) {
+            if (mOPGestures != null) {
                 if (haveEnableGesture != threeFingerGesture) {
                     haveEnableGesture = threeFingerGesture;
                     if (haveEnableGesture) {
-                        mWindowManagerFuncs.registerPointerEventListener(mSwipeToScreenshot, DEFAULT_DISPLAY);
+                        mWindowManagerFuncs.registerPointerEventListener(mOPGestures, DEFAULT_DISPLAY);
                     } else {
-                        mWindowManagerFuncs.unregisterPointerEventListener(mSwipeToScreenshot, DEFAULT_DISPLAY);
+                        mWindowManagerFuncs.unregisterPointerEventListener(mOPGestures, DEFAULT_DISPLAY);
                     }
                 }
             }
@@ -6998,7 +6998,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         GestureCallbacks gestureCallbacks = new GestureCallbacks(mContext, mCurrentUserId);
 
-        mSwipeToScreenshot = new SwipeToScreenshotListener(mContext, new SwipeToScreenshotListener.Callbacks() {
+        mOPGestures = new OPGesturesListener(mContext, new OPGesturesListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
                 interceptScreenshotChord(TAKE_SCREENSHOT_FULLSCREEN, SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
