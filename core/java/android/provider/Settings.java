@@ -7124,6 +7124,14 @@ public final class Settings {
         public static final String PPU_SPOOF_BUILD_GMS_ARRAY = "ppu_spoof_build_gms_array";
         
         /**
+         * Whether three fingers swipe is active
+         * 0 = Inactive, 1 = Active
+         * @hide
+         */
+        @Readable
+        public static final String THREE_FINGER_GESTURE_ACTIVE = "three_fingers_swipe_active";
+
+        /**
          * @hide
          */
         public static final String RECENTS_LOCKED_TASKS = "recents_locked_tasks";
