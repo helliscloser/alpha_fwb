@@ -6311,9 +6311,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             voiceIntent.putExtra(RecognizerIntent.EXTRA_SECURE, true);
         }
         startActivityAsUser(voiceIntent, UserHandle.CURRENT_OR_SELF);
-        if (mBroadcastWakeLock.isHeld()){
-            mBroadcastWakeLock.release();
-        }
+        mBroadcastWakeLock.release();
     }
 
     BroadcastReceiver mDockReceiver = new BroadcastReceiver() {
@@ -7017,76 +7015,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
         mGestureLauncherService = LocalServices.getService(GestureLauncherService.class);
-    }
-
-    class GestureCallbacks implements SwipeToScreenshotListener.Callbacks, ShakeGestureService.ShakeGesturesCallbacks {
-        private Context mContext;
-        private int mCurrentUserId;
-
-        public GestureCallbacks(Context context, int currentUserId) {
-            this.mContext = context;
-            this.mCurrentUserId = currentUserId;
-        }
-
-        @Override
-        public void onVoiceLaunch() {
-            launchVoiceAssistWithWakeLock();
-        }
-
-        @Override
-        public void onLaunchSearch() {
-            long eventTime = System.currentTimeMillis();
-            KeyEvent downEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SEARCH, 0);
-            launchAssistAction(null, INVALID_INPUT_DEVICE_ID, SystemClock.uptimeMillis(),
-                   AssistUtils.INVOCATION_TYPE_ASSIST_BUTTON);
-            logKeyboardSystemsEvent(downEvent, KeyboardLogEvent.LAUNCH_ASSISTANT);
-        }
-
-        @Override
-        public void onScreenshotTaken() {
-            interceptScreenshotChord(TAKE_SCREENSHOT_FULLSCREEN, SCREENSHOT_KEY_OTHER, 0 /*pressDelay*/);
-        }
-
-        @Override
-        public void onClearAllNotifications() {
-            clearAllNotifications();
-        }
-
-        @Override
-        public void onToggleRingerModes() {
-            toggleRingerModes();
-        }
-
-        @Override
-        public void onToggleTorch() {
-            toggleTorch();
-        }
-
-        @Override
-        public void onMediaKeyDispatch() {
-            AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-            int keyCode = am.isMusicActive() ? KeyEvent.KEYCODE_MEDIA_NEXT : KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-            long eventTime = System.currentTimeMillis();
-            KeyEvent downEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, keyCode, 0);
-            KeyEvent upEvent = new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, keyCode, 0);
-            dispatchMediaKeyWithWakeLock(downEvent);
-            dispatchMediaKeyWithWakeLock(upEvent);
-        }
-
-        @Override
-        public void onToggleVolumePanel() {
-            toggleVolumePanel();
-        }
-
-        @Override
-        public void onKillApp() {
-            ActionUtils.killForegroundApp(mContext, mCurrentUserId);
-        }
-
-        @Override
-        public void onTurnScreenOnOrOff() {
-            turnScreenOnOrOff();
-        }
     }
 
     /** {@inheritDoc} */
